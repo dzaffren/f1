@@ -1,0 +1,33 @@
+[project]
+name = "f1"
+version = "0.1.0"
+description = "Predict Formula 1 qualifying and race results, scored against naive baselines."
+readme = "README.md"
+authors = [
+    { name = "Dzafran", email = "ahmaddzafranmohamadbustaman@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastf1>=3.8.3,<4",
+    "pandas>=2.1.1",
+]
+
+[project.scripts]
+f1 = "f1.cli:main"
+
+[dependency-groups]
+dev = [
+    "jupyterlab",
+    "pytest",
+    "ruff",
+]
+
+[build-system]
+requires = ["uv_build>=0.10.6,<0.11.0"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
