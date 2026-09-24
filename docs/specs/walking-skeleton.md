@@ -1,6 +1,6 @@
 # Walking skeleton
 
-**Version:** v1 · **Status:** Refined · **Type:** Skeleton · **Project type:** Data app (CLI)
+**Version:** v1 · **Status:** Built · **Type:** Skeleton · **Project type:** Data app (CLI)
 
 **Shape doc:** docs/specs/f1-predictions/shape.md
 **Depends on:** None
@@ -297,6 +297,21 @@ Also cut: typer or click. argparse covers one subcommand with two flags.
 **E2E:** `test_scores_bahrain_2024` runs `f1 score --season 2024 --round 1` as
 a subprocess against the fixture cache. It asserts exit 0, the race name line,
 and `Mean position error: 2.30 places`. That value was computed by hand from the POC data: 46 places off across 20 drivers.
+
+### Found during build
+
+- `requests_cache` logs a full traceback at WARNING each time it serves a stale
+  entry because the network failed. After 12 hours offline, that trace would
+  print above correct output. `data.py` sets the `requests_cache` logger to ERROR.
+- FastF1 cache entries expire after 12 hours, but `stale_if_error=True`
+  (`fastf1/req.py:252-254`) still serves them when the network fails. CI always
+  runs more than 12 hours after capture, so `tests/conftest.py` force-expires its
+  copy of the fixture and every run takes that path.
+- `requests-cache` was added as an explicit dev dependency, because the tests
+  import it to expire the fixture.
+- `tests/conftest.py` holds the shared fixtures (`cache_dir`, `offline`, `run_f1`).
+- The missing-flag test passed before any code existed, because argparse handles
+  it. It stays as a guard on the exit-2 contract.
 
 ### Chunks
 
