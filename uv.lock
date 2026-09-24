@@ -622,6 +622,7 @@ dependencies = [
 dev = [
     { name = "jupyterlab" },
     { name = "pytest" },
+    { name = "requests-cache" },
     { name = "ruff" },
 ]
 
@@ -635,6 +636,7 @@ requires-dist = [
 dev = [
     { name = "jupyterlab" },
     { name = "pytest" },
+    { name = "requests-cache", specifier = ">=1.3.3" },
     { name = "ruff" },
 ]
 
