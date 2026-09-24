@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 from f1.baseline import score_grid
-from f1.data import load_race
+from f1.data import DataError, load_race
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -18,7 +18,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     cache_dir = Path(os.environ.get("F1_CACHE_DIR", ".cache/fastf1"))
-    race = load_race(args.season, args.round, cache_dir)
+    try:
+        race = load_race(args.season, args.round, cache_dir)
+    except DataError as err:
+        print(err, file=sys.stderr)
+        return 1
     table, mean = score_grid(race.results)
 
     print(f"{race.season} {race.event_name} (round {race.round})")
