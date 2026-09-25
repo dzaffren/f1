@@ -313,6 +313,14 @@ and `Mean position error: 2.30 places`. That value was computed by hand from the
 - The missing-flag test passed before any code existed, because argparse handles
   it. It stays as a guard on the exit-2 contract.
 
+### Found at review
+
+- `tests/conftest.py` called `requests_cache` `reset_expiration()`, which loops
+  forever once the fixture entries have expired. It passed at build and hung at
+  review. Fixed by reading all rows before rewriting them. CI job capped at 10 minutes.
+- The default cache path was relative to the current folder. It is now
+  `DEFAULT_CACHE_DIR` in `cli.py`, anchored at the repo root, with a test.
+
 ### Chunks
 
 Single chunk. About 12 small files, one area, too tightly linked to split.

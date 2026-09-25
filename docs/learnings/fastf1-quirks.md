@@ -15,3 +15,6 @@ Confirmed against FastF1 3.8.3 on 2026-09-25 (POC and walking-skeleton build).
 - `set_log_level("ERROR")` does not cover Python `UserWarning`s from the ergast module.
 - F1 live timing ("Failed to load session info data!") failed from this laptop.
   Results still load via Jolpica. Recheck before any slice that needs lap timing.
+- Never call `requests_cache` `SQLiteCache.reset_expiration()` on a cache whose
+  entries have expired: it rewrites rows under a live cursor and loops forever.
+  Materialise `list(cache.filter())` first. Passed during build, hung at review.
