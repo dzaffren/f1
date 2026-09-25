@@ -22,7 +22,12 @@ def cache_dir(tmp_path):
     target = tmp_path / "fastf1_cache"
     shutil.copytree(FIXTURE_CACHE, target)
     cache = requests_cache.SQLiteCache(str(target / "fastf1_http_cache.sqlite"))
-    cache.reset_expiration(datetime.timedelta(seconds=-1))
+    # Not cache.reset_expiration(): it rewrites rows while a cursor is still
+    # reading them, and once the entries have expired the rewritten rows sort
+    # ahead of the cursor and the loop never ends. Read them all first.
+    for response in list(cache.filter()):
+        response.reset_expiration(datetime.timedelta(seconds=-1))
+        cache.responses[response.cache_key] = response
     return target
 
 
