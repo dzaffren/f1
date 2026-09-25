@@ -6,6 +6,9 @@ from pathlib import Path
 from f1.baseline import score_grid
 from f1.data import DataError, load_race
 
+# The repo root, so the cache is the same whichever folder you run from.
+DEFAULT_CACHE_DIR = Path(__file__).resolve().parents[2] / ".cache" / "fastf1"
+
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="f1")
@@ -17,7 +20,7 @@ def main(argv: list[str] | None = None) -> int:
     score.add_argument("--round", type=int, required=True, metavar="N")
     args = parser.parse_args(argv)
 
-    cache_dir = Path(os.environ.get("F1_CACHE_DIR", ".cache/fastf1"))
+    cache_dir = Path(os.environ.get("F1_CACHE_DIR", DEFAULT_CACHE_DIR))
     try:
         race = load_race(args.season, args.round, cache_dir)
     except DataError as err:
